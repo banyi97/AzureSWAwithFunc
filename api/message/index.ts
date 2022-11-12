@@ -10,7 +10,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     try {
         const { payload, protectedHeader } = await jose.jwtVerify(jwt, JWKS, {
             issuer: process.env.ISSUER,
-            audiences: [process.env.AUDIENCE.split(',')]
+            audience: process.env.AUDIENCE.split(',')
         })
         context.res = {
             status: 200,
