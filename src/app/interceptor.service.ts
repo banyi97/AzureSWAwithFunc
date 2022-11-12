@@ -24,7 +24,7 @@ export class InterceptorService implements HttpInterceptor {
       mergeMap(token => {
         if (token) {
           req = req.clone({
-            setHeaders: { Authorization: `Bearer ${token}` }
+            setHeaders: { Authentication: `Bearer ${token}` }
           });
         }
         return next.handle(req);

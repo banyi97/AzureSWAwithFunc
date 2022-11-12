@@ -4,7 +4,7 @@ var jose = require('jose');
 const JWKS = jose.createRemoteJWKSet(new URL('https://banyi97.eu.auth0.com/.well-known/jwks.json'))
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    const headerValue = req.headers.Authorization || req.headers.authorization || ''
+    const headerValue = req.headers.Authentication || req.headers.authentication || ''
     const jwt = headerValue.replace(/^Bearer\s/, '').replace(/^bearer\s/, '')
     
     try {
