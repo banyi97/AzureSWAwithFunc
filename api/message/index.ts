@@ -21,7 +21,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         };
     } catch (error) {
         context.res = {
-            status: 401
+            status: 401,
+            body: {}
         };
     }
 };
