@@ -1,7 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 
 var jose = require('jose');
-const JWKS = jose.createRemoteJWKSet(new URL(process.env.JWKS_URL))
+const JWKS = jose.createRemoteJWKSet(new URL('https://banyi97.eu.auth0.com/.well-known/jwks.json'))
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const headerValue = req.headers.Authorization || req.headers.authorization || ''
@@ -9,8 +9,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     
     try {
         const { payload, protectedHeader } = await jose.jwtVerify(jwt, JWKS, {
-            issuer: process.env.ISSUER,
-            audience: process.env.AUDIENCE.split(',')
+            issuer: 'https://banyi97.eu.auth0.com/',
+            audience: ['AzureSWAwithFunc', 'https://banyi97.eu.auth0.com/userinfo']
         })
         context.res = {
             status: 200,
