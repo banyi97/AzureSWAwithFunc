@@ -21,7 +21,6 @@ export class InterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     return this.auth.getAccessTokenSilently().pipe(
-      //map(idtoken => idtoken?.__raw),
       mergeMap(token => {
         if (token) {
           req = req.clone({
