@@ -1,16 +1,29 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 
-const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    context.log('HTTP trigger function processed a request.');
-    const responseMessage = "test data"
-    context.res = {
-        status: 200,
-        body: {data: responseMessage},
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
+var jose = require('jose');
+const JWKS = jose.createRemoteJWKSet(new URL(process.env.JWKS_URL))
 
+const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+    const headerValue = req.headers.Authentication || req.headers.authentication || ''
+    const jwt = headerValue.replace(/^Bearer\s/, '').replace(/^bearer\s/, '')
+    
+    try {
+        const { payload, protectedHeader } = await jose.jwtVerify(jwt, JWKS, {
+            issuer: process.env.ISSUER,
+            audiences: [process.env.AUDIENCE.split(',')]
+        })
+        context.res = {
+            status: 200,
+            body: { data: 'ok' },
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+    } catch (error) {
+        context.res = {
+            status: 401,
+        };
+    }
 };
 
 export default httpTrigger;
